@@ -30,4 +30,10 @@ public class MovieController : ControllerBase
     {
         return true;
     }
+
+    [HttpPost]
+    public bool Post([FromBody] Movie movie)
+    {
+        return true;
+    }
 }
