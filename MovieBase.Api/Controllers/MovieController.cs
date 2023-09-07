@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MovieBase.Common;
 
@@ -32,8 +34,27 @@ public class MovieController : ControllerBase
     }
 
     [HttpPost]
-    public bool Post([FromBody] Movie movie)
+    public bool Post(Movie movie)
     {
         return true;
+    }
+
+    [HttpPut("{id}")]
+    public bool Put(int id, Dictionary<string, string> values)
+    {
+        return true;
+    }
+
+    [HttpPatch]
+    public IActionResult Patch([FromBody]JsonPatchDocument<Movie> jsonPatch)
+    {
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpGet("[action]")]
+    public string AmILoggedIn()
+    {
+        return "Yes";
     }
 }

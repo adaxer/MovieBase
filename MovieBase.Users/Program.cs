@@ -1,7 +1,5 @@
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-namespace MovieBase.Api;
+namespace MovieBase.Users;
 
 public class Program
 {
@@ -11,16 +9,15 @@ public class Program
 
         // Add services to the container.
 
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.Authority = "https://localhost:5555";  // Your IdentityServer's address
-            options.RequireHttpsMetadata = false; // Use this for development, turn it on for production
-            options.TokenValidationParameters.ValidateAudience = false;
-            options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
-        });
+        builder.Services.AddIdentityServer()
+            .AddDeveloperSigningCredential()  // For dev purposes
+            .AddInMemoryApiResources(Config.GetApiResources())  // Your API resources
+            .AddInMemoryApiScopes(Config.GetApiScopes())
+            .AddInMemoryClients(Config.GetClients())            // Your client configurations
+            .AddTestUsers(Config.GetUsers());                   // For testing, use in-memory users
 
-        builder.Services.AddControllers().AddNewtonsoftJson();
+
+        builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -35,7 +32,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-        app.UseAuthentication();
+        app.UseRouting();
+        app.UseIdentityServer();
         app.UseAuthorization();
 
 
