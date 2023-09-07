@@ -24,4 +24,10 @@ public class MovieController : ControllerBase
     {
         return new Movie { Id = id, Title = $"Movie {id}" };
     }
+
+    [HttpDelete("{id}")]
+    public bool Delete(int id)
+    {
+        return true;
+    }
 }
