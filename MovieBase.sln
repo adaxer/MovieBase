@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBase.Common", "MovieBa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBase.Data", "MovieBase.Data\MovieBase.Data.csproj", "{D6D27B51-F1B6-4D02-9E4C-12B54C6D6A6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieBase.Users", "MovieBase.Users\MovieBase.Users.csproj", "{8D3315AF-C278-46F5-9ED5-F2698F3DB9FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBase.Users", "MovieBase.Users\MovieBase.Users.csproj", "{8D3315AF-C278-46F5-9ED5-F2698F3DB9FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieBase.TestClient", "MovieBase.TestClient\MovieBase.TestClient.csproj", "{7FCC1B04-CC67-4F81-B9B1-549AB4AABAC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBase.TestClient", "MovieBase.TestClient\MovieBase.TestClient.csproj", "{7FCC1B04-CC67-4F81-B9B1-549AB4AABAC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunWithFlags", "FunWithFlags\FunWithFlags.csproj", "{AC363554-598D-417C-A0B1-F726BA32378A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{7FCC1B04-CC67-4F81-B9B1-549AB4AABAC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FCC1B04-CC67-4F81-B9B1-549AB4AABAC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FCC1B04-CC67-4F81-B9B1-549AB4AABAC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC363554-598D-417C-A0B1-F726BA32378A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC363554-598D-417C-A0B1-F726BA32378A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC363554-598D-417C-A0B1-F726BA32378A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC363554-598D-417C-A0B1-F726BA32378A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
