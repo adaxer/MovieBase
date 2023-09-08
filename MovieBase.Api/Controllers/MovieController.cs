@@ -1,7 +1,9 @@
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MovieBase.Common;
+using MovieBase.Data;
 
 namespace MovieBase.Api.Controllers;
 [ApiController]
@@ -9,33 +11,45 @@ namespace MovieBase.Api.Controllers;
 public class MovieController : ControllerBase
 {
     private readonly ILogger<MovieController> _logger;
+    private readonly MovieContext db;
 
-    public MovieController(ILogger<MovieController> logger)
+    public MovieController(ILogger<MovieController> logger, MovieContext db)
     {
         _logger = logger;
+        this.db = db;
     }
 
     [HttpGet("[Action]", Name = "GetAllMovies")]
     public IEnumerable<Movie> List()
     {
-        return new List<Movie> { new Movie { Id = 1, Title = "Indiana Jones" }, new Movie { Id = 2, Title = "Starwars 27" } };
+        return db.Movies.ToList();
     }
 
     [HttpGet("{id}")]
-    public Movie Get(int id)
+    public Movie? Get(int id)
     {
-        return new Movie { Id = id, Title = $"Movie {id}" };
+        return (db.Movies.Find(id) is Movie theOne)
+            ? theOne
+            : null;
     }
 
     [HttpDelete("{id}")]
     public bool Delete(int id)
     {
-        return true;
+        if (db.Movies.Find(id) is Movie theOne)
+        {
+            db.Movies.Remove(theOne);
+            db.SaveChanges();
+            return true;
+        }
+        return false;
     }
 
     [HttpPost]
     public bool Post(Movie movie)
     {
+        db.Movies.Add(movie);
+        db.SaveChanges();
         return true;
     }
 
@@ -46,7 +60,7 @@ public class MovieController : ControllerBase
     }
 
     [HttpPatch]
-    public IActionResult Patch([FromBody]JsonPatchDocument<Movie> jsonPatch)
+    public IActionResult Patch([FromBody] JsonPatchDocument<Movie> jsonPatch)
     {
         return Ok();
     }

@@ -1,5 +1,7 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MovieBase.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MovieBase.Api;
 
@@ -25,6 +27,10 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.AddDbContext<MovieContext>(b=>b.UseInMemoryDatabase("MoviesInMemory.db"));
+
+        ////////////////////////////////////////////
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

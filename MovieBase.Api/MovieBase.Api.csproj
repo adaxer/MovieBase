@@ -10,11 +10,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.10" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MovieBase.Common\MovieBase.Common.csproj" />
+    <ProjectReference Include="..\MovieBase.Data\MovieBase.Data.csproj" />
   </ItemGroup>
 
 </Project>
