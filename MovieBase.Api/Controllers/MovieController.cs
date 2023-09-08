@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieBase.Common;
 using MovieBase.Data;
 
@@ -20,43 +22,65 @@ public class MovieController : ControllerBase
     }
 
     [HttpGet("[Action]", Name = "GetAllMovies")]
-    public IEnumerable<Movie> List()
+    public async Task<IActionResult> List()
     {
-        return db.Movies.ToList();
+        var result = await db.Movies.ToListAsync();
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
-    public Movie? Get(int id)
+    public async Task<IActionResult> Get(int id)
     {
-        return (db.Movies.Find(id) is Movie theOne)
-            ? theOne
-            : null;
+        return ((await db.Movies.FindAsync(id)) is Movie theOne)
+            ? Ok(theOne)
+            : NotFound();
     }
 
     [HttpDelete("{id}")]
-    public bool Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        if (db.Movies.Find(id) is Movie theOne)
+        if ((await db.Movies.FindAsync(id)) is Movie theOne)
         {
             db.Movies.Remove(theOne);
-            db.SaveChanges();
-            return true;
+            await db.SaveChangesAsync();
+            return Ok();
         }
-        return false;
+        return NotFound();
     }
 
     [HttpPost]
-    public bool Post(Movie movie)
+    public async Task<IActionResult> Post(Movie movie)
     {
-        db.Movies.Add(movie);
-        db.SaveChanges();
-        return true;
+        try
+        {
+            await db.Movies.AddAsync(movie);
+            await db.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = movie.Id }, movie);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Post failed");
+            return BadRequest(ex);
+        }
     }
 
     [HttpPut("{id}")]
-    public bool Put(int id, Dictionary<string, string> values)
+    public async Task<IActionResult> Put(int id, [FromBody] Movie movie)
     {
-        return true;
+        if (id != movie.Id)
+        {
+            return BadRequest("Die Movie-Id im Pfad stimmt nicht mit der im Body überein.");
+        }
+        if((await db.Movies.FindAsync(id)) is Movie existingMovie)
+        {
+            db.Entry(existingMovie).CurrentValues.SetValues(movie);
+            await db.SaveChangesAsync();
+            return NoContent();
+        }
+        else
+        {
+            return NotFound();
+        }
     }
 
     [HttpPatch]
