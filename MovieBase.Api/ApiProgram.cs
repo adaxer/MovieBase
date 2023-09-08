@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MovieBase.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using MovieBase.Api.Services;
+using AutoMapper;
 
 namespace MovieBase.Api;
 
-public class Program
+public class ApiProgram
 {
     public static void Main(string[] args)
     {
@@ -22,12 +25,28 @@ public class Program
             options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
         });
 
-        builder.Services.AddControllers().AddNewtonsoftJson();
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin", policy =>
+            {
+                policy
+                    .RequireRole("admin")
+                    .RequireClaim(ClaimTypes.Email);
+            });
+        });
+
+        builder.Services.AddControllers()
+            .AddNewtonsoftJson()
+            .AddXmlSerializerFormatters();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddDbContext<MovieContext>(b=>b.UseInMemoryDatabase("MoviesInMemory.db"));
+
+        builder.Services.AddHostedService<AddMoviesService>();
+        builder.Services.AddAutoMapper(options=>options.AddProfile<MapperProfile>());
 
         ////////////////////////////////////////////
         

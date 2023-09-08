@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Mime;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,17 +16,21 @@ public class MovieController : ControllerBase
 {
     private readonly ILogger<MovieController> _logger;
     private readonly MovieContext db;
+    private readonly IMapper mapper;
 
-    public MovieController(ILogger<MovieController> logger, MovieContext db)
+    public MovieController(ILogger<MovieController> logger, MovieContext db, IMapper mapper)
     {
         _logger = logger;
         this.db = db;
+        this.mapper = mapper;
     }
 
     [HttpGet("[Action]", Name = "GetAllMovies")]
+    [Produces(MediaTypeNames.Application.Xml, MediaTypeNames.Application.Json)]
+    [ResponseCache(Duration=10)]
     public async Task<IActionResult> List()
     {
-        var result = await db.Movies.ToListAsync();
+        var result = (await db.Movies.ToListAsync()).Select(mapper.Map<Movie, MovieDTO>).ToList();
         return Ok(result);
     }
 
@@ -89,10 +95,13 @@ public class MovieController : ControllerBase
         return Ok();
     }
 
-    [Authorize]
+    [Authorize(Policy ="Admin")]
     [HttpGet("[action]")]
     public string AmILoggedIn()
     {
-        return "Yes";
+        var isAdmin = User.IsInRole("admin");
+        return isAdmin
+            ? "Yes"
+            : "Maybe";
     }
 }

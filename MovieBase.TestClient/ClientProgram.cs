@@ -2,7 +2,7 @@
 
 namespace MovieBase.TestClient;
 
-internal class Program
+internal class ClientProgram
 {
     static async Task Main(string[] args)
     {
@@ -35,6 +35,46 @@ internal class Program
         Console.WriteLine($"Token: {tokenResponse.AccessToken}\n");
 
         // Consume the MovieBase API
+        //var apiClient = new HttpClient();
+        //apiClient.SetBearerToken(tokenResponse.AccessToken);
+
+        //var response = await apiClient.GetAsync("https://localhost:7027/Movie/AmILoggedIn");
+        //if (!response.IsSuccessStatusCode)
+        //{
+        //    Console.WriteLine($"API Request Error: {response.StatusCode}");
+        //}
+        //else
+        //{
+        //    var content = await response.Content.ReadAsStringAsync();
+        //    Console.WriteLine($"API Response: {content}");
+        //}
+
+        //await Console.Out.WriteLineAsync("Thats it");
+
+
+        // Zweite Variante: mit Username/Password
+
+        client = new HttpClient();
+
+        tokenResponse = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
+        {
+            Address = disco.TokenEndpoint,
+            ClientId = "ResourceOwnerClient",
+            ClientSecret = "secret",
+            UserName = "bob",
+            Password = "password",
+            Scope = "openid profile MovieBaseAPI"
+        });
+
+        if (tokenResponse.IsError)
+        {
+            Console.WriteLine($"Error: {tokenResponse.Error}");
+        }
+        else
+        {
+            Console.WriteLine($"Token: {tokenResponse.AccessToken}");
+        }
+
         var apiClient = new HttpClient();
         apiClient.SetBearerToken(tokenResponse.AccessToken);
 
@@ -50,6 +90,8 @@ internal class Program
         }
 
         await Console.Out.WriteLineAsync("Thats it");
+
+
         Console.ReadLine();
     }
 }

@@ -11,7 +11,7 @@ public static class Config
     {
         return new List<ApiResource>
         {
-            new ApiResource("MovieBaseAPI", "Movie Base API")
+            new ApiResource("MovieBaseAPI", "Movie Base API") { UserClaims = { JwtClaimTypes.Name, JwtClaimTypes.Role }}
         };
     }
 
@@ -19,7 +19,9 @@ public static class Config
     {
         return new List<ApiScope>
     {
-        new ApiScope("MovieBaseAPI", "Movie Base API")
+        new ApiScope("MovieBaseAPI", "Movie Base API"),
+        new ApiScope("openid", "OpenID Connect"),
+        new ApiScope("profile", "Profil")
     };
     }
 
@@ -35,7 +37,17 @@ public static class Config
                 {
                     new Secret("secret".Sha256())
                 },
-                AllowedScopes = { "MovieBaseAPI", "offline_access" }
+                AllowedScopes = { "MovieBaseAPI"}
+            },
+            new Client
+            {
+                ClientId = "ResourceOwnerClient",
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+                AllowedScopes = { "openid", "profile", "MovieBaseAPI"}
             }
         };
     }
@@ -47,11 +59,12 @@ public static class Config
             new TestUser
             {
                 SubjectId = "1",
-                Username = "admin",
+                Username = "bob",
                 Password = "password",
                 Claims = new List<Claim>
                 {
-                    new Claim(JwtClaimTypes.Role, "admin")
+                    new Claim(JwtClaimTypes.Role, "admin"),
+                    new Claim(JwtClaimTypes.Name, "bob")
                 }
             }
         };
