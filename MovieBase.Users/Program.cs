@@ -1,3 +1,4 @@
+using System.Security.Claims;
 
 namespace MovieBase.Users;
 
@@ -14,7 +15,8 @@ public class Program
             .AddInMemoryApiResources(Config.GetApiResources())  // Your API resources
             .AddInMemoryApiScopes(Config.GetApiScopes())
             .AddInMemoryClients(Config.GetClients())            // Your client configurations
-            .AddTestUsers(Config.GetUsers());                   // For testing, use in-memory users
+            .AddTestUsers(Config.GetUsers())                   // For testing, use in-memory users
+            .AddProfileService<SampleProfileService>();
 
 
         builder.Services.AddControllers();

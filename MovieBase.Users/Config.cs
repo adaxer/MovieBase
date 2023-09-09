@@ -11,18 +11,19 @@ public static class Config
     {
         return new List<ApiResource>
         {
-            new ApiResource("MovieBaseAPI", "Movie Base API") { UserClaims = { JwtClaimTypes.Name, JwtClaimTypes.Role }}
+            new ApiResource("MovieBaseAPI", "Movie Base API") { UserClaims = { JwtClaimTypes.Name, JwtClaimTypes.Role, JwtClaimTypes.Email }}
         };
     }
 
     public static IEnumerable<ApiScope> GetApiScopes()
     {
         return new List<ApiScope>
-    {
-        new ApiScope("MovieBaseAPI", "Movie Base API"),
-        new ApiScope("openid", "OpenID Connect"),
-        new ApiScope("profile", "Profil")
-    };
+        {
+            new ApiScope("MovieBaseAPI", "Movie Base API"),
+            new ApiScope("openid", "OpenID Connect"),
+            new ApiScope("profile", "Profil"),
+            new ApiScope("email", "email")
+        };
     }
 
     public static IEnumerable<Client> GetClients()
@@ -43,11 +44,13 @@ public static class Config
             {
                 ClientId = "ResourceOwnerClient",
                 AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                AlwaysIncludeUserClaimsInIdToken = true,
+                AlwaysSendClientClaims = true,
                 ClientSecrets =
                 {
                     new Secret("secret".Sha256())
                 },
-                AllowedScopes = { "openid", "profile", "MovieBaseAPI"}
+                AllowedScopes = { "openid", "profile", "email", "MovieBaseAPI"},
             }
         };
     }
@@ -64,7 +67,8 @@ public static class Config
                 Claims = new List<Claim>
                 {
                     new Claim(JwtClaimTypes.Role, "admin"),
-                    new Claim(JwtClaimTypes.Name, "bob")
+                    new Claim(JwtClaimTypes.Name, "bob"),
+                    new Claim(JwtClaimTypes.Email, "bob@bob.com")
                 }
             }
         };
